@@ -9,11 +9,12 @@ body{
     height: 600px;
 }
 
-.grid{
-    display: grid;
-    grid-template-rows: repeat(6, auto);
-    grid-template-columns: repeat(5, auto);
+.grid {
+  display: grid;
+  grid-template-rows: repeat(var(--rows), auto);
+  grid-template-columns: repeat(var(--cols), auto);
 }
+
 
 .box{
     width: 60px;
@@ -41,8 +42,10 @@ body{
     background: #538d4e;
 }
 
+
+/* When called plays the flip animation */
 .animated {
-    animation: flip 0.5s ease;
+    animation: flip 0.5s ease-in-out;
   }
   
   @keyframes flip {
