@@ -1,16 +1,3 @@
-// 1. Get the canvas and its 2D context
-const canvas = document.getElementById('myCanvas');
-const ctx = canvas.getContext('2d');
-
-// 2. Set colors
-ctx.fillStyle = 'blue';    // For solid boxes
-ctx.strokeStyle = 'red';   // For outlines
-ctx.lineWidth = 5;         // Thickness of the outline
-
-// 3. Draw the boxes: (x, y, width, height)
-ctx.fillRect(50, 50, 150, 100);    // Draws a solid blue box
-ctx.strokeRect(250, 50, 150, 100); // Draws a red outline box
-
 
 import {
   twoLetterDictionary,
