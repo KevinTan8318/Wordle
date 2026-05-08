@@ -1,19 +1,90 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wordy</title>
-    
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <script type="module" src="index.js" defer></script>
-</head>
+  </head>
 
-<body>
-    <div id="game">
-    <div class="grid"></div>
+  <body>
+    <div id="StartMenu">
+      <div class="menu-section">
+        <img src="Images/icon.png" alt="Your Company" class="logo" />
+
+        <h2 class="title">
+          Get a specific amoount of chances to guess a word.
+        </h2>
+      </div>
+
+      <div id="ModesButton" class="menu-section">
+        <button class="menu-button rose-button">Modes</button>
+
+        <button
+          id="Start-Round"
+          type="submit"
+          class="menu-button indigo-button"
+        >
+          Play
+        </button>
+      </div>
     </div>
 
-</body>
+    <div id="game">
+      <div class="grid"></div>
+      <!-- Add keyboard inputs too like wordle -->
+    </div>
 
+    <div id="ModesMenu" class="modal">
+      <div class="modal-top">
+        <h2 class="modal-heading">Settings</h2>
+
+        <button id="Exit" class="close-button" type="button" aria-label="Close">
+          ✕
+        </button>
+      </div>
+
+      <div class="settings-container">
+        <!-- Hard Mode -->
+        <div class="setting">
+          <div class="setting-text">
+            <h3 class="setting-title">Word Length</h3>
+
+            <p class="setting-description">
+              choose how long the randomly selected word is
+            </p>
+          </div>
+
+          <input type="number" />
+        </div>
+
+        <div class="setting">
+          <div class="setting-text">
+            <h3 class="setting-title">Total Rows</h3>
+
+            <p class="setting-description">choose how many guesses you get</p>
+          </div>
+
+          <input type="number" />
+        </div>
+
+        <div class="setting">
+          <div class="setting-text">
+            <h3 class="setting-title">Rapid Fire</h3>
+
+            <p class="setting-description">
+              See how many matches you can win in a row before losing!
+              <!--Should display what their streak is-->
+            </p>
+          </div>
+
+          <label class="switch">
+            <input type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
