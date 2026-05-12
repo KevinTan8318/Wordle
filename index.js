@@ -5,221 +5,144 @@ import {
   fiveLetterDictionary,
 } from "./dictionary.js";
 
-const TOTAL_ROWS = 6; // How many rows (down)
-const TOTAL_COLS = 5; // How many colums (left to right)
+const TOTAL_ROWS = 6;
+const TOTAL_COLS = 5;
 
-// Gets the dictionary of whatever is needed
+// Pick the right dictionary based on the word length
 let dictionary = [];
 
-if (TOTAL_COLS === 2) {
-  dictionary = twoLetterDictionary;
-} else if (TOTAL_COLS === 3) {
-  dictionary = threeLetterDictionary;
-} else if (TOTAL_COLS === 4) {
-  dictionary = fourLetterDictionary;
-} else if (TOTAL_COLS === 5) {
-  dictionary = fiveLetterDictionary;
-} else {
-  alert("There was no dictionary found. An error occured from rows or colums");
-}
+if (TOTAL_COLS === 2) dictionary = twoLetterDictionary;
+else if (TOTAL_COLS === 3) dictionary = threeLetterDictionary;
+else if (TOTAL_COLS === 4) dictionary = fourLetterDictionary;
+else if (TOTAL_COLS === 5) dictionary = fiveLetterDictionary;
+else alert("No dictionary found for this word length.");
 
 const state = {
-  // Picks a random word
-  // gets random decimal, multiply by dictionarys total words
-  // and rounds it to whole number like dictionary[380]
   secret: dictionary[Math.floor(Math.random() * dictionary.length)],
-
-  // Creates rows + columns depending on variables
   grid: Array(TOTAL_ROWS)
     .fill()
     .map(() => Array(TOTAL_COLS).fill("")),
-
   currentRow: 0,
   currentCol: 0,
 };
 
-console.log(state.secret); // print the word
+console.log("Secret word:", state.secret);
 
-function drawGrid(container) {
-  const grid = document.createElement("div"); // create a new div with a class named grid
-  grid.className = "grid";
+const startMenu = document.getElementById("StartMenu");
+const gameMenu = document.getElementById("game");
+const startButton = document.getElementById("Start-Round");
+const board = document.querySelector("#game .grid");
 
-  // Creates required amount of boxes
-  for (let i = 0; i < TOTAL_ROWS; i++) {
-    for (let j = 0; j < TOTAL_COLS; j++) {
-      drawBox(grid, i, j);
+// Put the game board on the screen
+function drawGrid() {
+  board.innerHTML = "";
+
+  for (let row = 0; row < TOTAL_ROWS; row++) {
+    for (let col = 0; col < TOTAL_COLS; col++) {
+      const box = document.createElement("div");
+      box.className = "box";
+      box.id = `box${row}${col}`;
+      board.appendChild(box);
     }
   }
-
-  container.appendChild(grid); // adds the div to the container thats called
 }
 
+// Copy the letters from state.grid onto the screen
 function updateGrid() {
-  // Loops through every row + column
-  for (let i = 0; i < state.grid.length; i++) {
-    for (let j = 0; j < state.grid[i].length; j++) {
-      // Gets specific box
-      const box = document.getElementById(`box${i}${j}`);
-
-      // Updates visible text
-      box.textContent = state.grid[i][j];
+  for (let row = 0; row < TOTAL_ROWS; row++) {
+    for (let col = 0; col < TOTAL_COLS; col++) {
+      const box = document.getElementById(`box${row}${col}`);
+      box.textContent = state.grid[row][col];
     }
   }
 }
 
-function drawBox(container, row, col, letter = "") {
-  // Creates one box
-  const box = document.createElement("div");
-
-  box.className = "box";
-
-  box.textContent = letter;
-
-  // Gives every box unique id
-  // Example: box23
-  box.id = `box${row}${col}`;
-
-  container.appendChild(box);
-
-  return box;
-}
-
-function registerKeyboardEvents() {
-  // Runs every time keyboard key is pressed
-  document.body.onkeydown = (e) => {
-    const key = e.key;
-
-    // Stops typing after game ends
-    if (state.currentRow >= TOTAL_ROWS) {
-      return;
-    }
-
-    // ENTER KEY
-    if (key === "Enter") {
-      // Only submit if row is full
-      if (state.currentCol === TOTAL_COLS) {
-        const word = getCurrentWord();
-
-        if (isWordValid(word)) {
-          revealWord(word);
-
-          // Move to next row
-          state.currentRow++;
-
-          state.currentCol = 0;
-        } else {
-          alert("Not a valid word.");
-        }
-      }
-    }
-
-    // BACKSPACE
-    if (key === "Backspace") {
-      removeLetter();
-    }
-
-    // LETTERS
-    if (isLetter(key)) {
-      addLetter(key.toLowerCase());
-    }
-
-    // Updates screen
-    updateGrid();
-  };
-}
-
+// Get the word the player is typing on the current row
 function getCurrentWord() {
-  // Turns array into full word
-  // ['h','e','l','l','o'] -> "hello"
-  return state.grid[state.currentRow].reduce((prev, curr) => prev + curr);
+  return state.grid[state.currentRow].join("");
 }
 
+// Check if a word is in the dictionary
 function isWordValid(word) {
-  // Checks if word exists in dictionary
   return dictionary.includes(word);
 }
 
-function getNumOfOccurrencesInWord(word, letter) {
-  // Counts how many times letter appears
-  let result = 0;
+// Check if a key is a letter
+function isLetter(key) {
+  return key.length === 1 && key.match(/[a-z]/i);
+}
+
+// Add one letter to the current row
+function addLetter(letter) {
+  if (state.currentCol === TOTAL_COLS) return;
+
+  state.grid[state.currentRow][state.currentCol] = letter;
+  state.currentCol++;
+}
+
+// Remove one letter from the current row
+function removeLetter() {
+  if (state.currentCol === 0) return;
+
+  state.currentCol--;
+  state.grid[state.currentRow][state.currentCol] = "";
+}
+
+// Count how many times a letter appears in a word
+function countLetter(word, letter) {
+  let count = 0;
 
   for (let i = 0; i < word.length; i++) {
-    if (word[i] === letter) {
-      result++;
-    }
+    if (word[i] === letter) count++;
   }
 
-  return result;
+  return count;
 }
 
-function getPositionOfOccurrence(word, letter, position) {
-  // Handles duplicate letter logic
-  let result = 0;
+// Count which copy of a letter this is in a word
+function getLetterPosition(word, letter, position) {
+  let count = 0;
 
   for (let i = 0; i <= position; i++) {
-    if (word[i] === letter) {
-      result++;
-    }
+    if (word[i] === letter) count++;
   }
 
-  return result;
+  return count;
 }
 
+// Show green / yellow / gray tiles
 function revealWord(guess) {
   const row = state.currentRow;
+  const animationDuration = 500;
 
-  const animation_duration = 500; // ms
-
-  // Loops through all letters
-  for (let i = 0; i < TOTAL_COLS; i++) {
-    const box = document.getElementById(`box${row}${i}`);
-
+  for (let col = 0; col < TOTAL_COLS; col++) {
+    const box = document.getElementById(`box${row}${col}`);
     const letter = box.textContent;
 
-    const numOfOccurrencesSecret = getNumOfOccurrencesInWord(
-      state.secret,
-      letter
-    );
+    const secretCount = countLetter(state.secret, letter);
+    const guessCount = countLetter(guess, letter);
+    const letterPos = getLetterPosition(guess, letter, col);
 
-    const numOfOccurrencesGuess = getNumOfOccurrencesInWord(guess, letter);
-
-    const letterPosition = getPositionOfOccurrence(guess, letter, i);
-
-    // Delays reveal animation
-    setTimeout(() => {
-      // Duplicate letter handling
-      if (
-        numOfOccurrencesGuess > numOfOccurrencesSecret &&
-        letterPosition > numOfOccurrencesSecret
-      ) {
-        // Gray
-        box.classList.add("empty");
-      } else {
-        // Green
-        if (letter === state.secret[i]) {
+    setTimeout(
+      () => {
+        if (guessCount > secretCount && letterPos > secretCount) {
+          box.classList.add("empty");
+        } else if (letter === state.secret[col]) {
           box.classList.add("right");
-
-          // Yellow
         } else if (state.secret.includes(letter)) {
           box.classList.add("wrong");
-
-          // Gray
         } else {
           box.classList.add("empty");
         }
-      }
-    }, ((i + 1) * animation_duration) / 2);
+      },
+      ((col + 1) * animationDuration) / 2,
+    );
 
-    // Flip animation
     box.classList.add("animated");
-
-    box.style.animationDelay = `${(i * animation_duration) / 2}ms`;
+    box.style.animationDelay = `${(col * animationDuration) / 2}ms`;
   }
 
-  // Win condition
   const isWinner = state.secret === guess;
-
-  // Lose condition
   const isGameOver = state.currentRow === TOTAL_ROWS - 1;
 
   setTimeout(() => {
@@ -228,85 +151,58 @@ function revealWord(guess) {
     } else if (isGameOver) {
       alert(`Better luck next time! The word was ${state.secret}.`);
     }
-  }, 3 * animation_duration);
+  }, 3 * animationDuration);
 }
 
-function isLetter(key) {
-  // Checks if key is alphabet letter
-  return key.length === 1 && key.match(/[a-z]/i);
+// Keyboard controls
+function registerKeyboardEvents() {
+  document.body.onkeydown = (e) => {
+    const key = e.key;
+
+    if (state.currentRow >= TOTAL_ROWS) return;
+
+    if (key === "Enter") {
+      if (state.currentCol === TOTAL_COLS) {
+        const word = getCurrentWord();
+
+        if (isWordValid(word)) {
+          revealWord(word);
+          state.currentRow++;
+          state.currentCol = 0;
+        } else {
+          alert("Not a valid word.");
+        }
+      }
+    }
+
+    if (key === "Backspace") {
+      removeLetter();
+    }
+
+    if (isLetter(key)) {
+      addLetter(key.toLowerCase());
+    }
+
+    updateGrid();
+  };
 }
 
-function addLetter(letter) {
-  // Stops typing if row full
-  if (state.currentCol === TOTAL_COLS) {
-    return;
-  }
-
-  // Adds letter to grid
-  state.grid[state.currentRow][state.currentCol] = letter;
-
-  state.currentCol++;
+// Show the game
+function startGame() {
+  startMenu.style.display = "none";
+  gameMenu.style.display = "grid";
 }
 
-function removeLetter() {
-  // Stops deleting if at beginning
-  if (state.currentCol === 0) {
-    return;
-  }
-
-  // Removes previous letter
-  state.grid[state.currentRow][state.currentCol - 1] = "";
-
-  state.currentCol--;
-}
-
-let StartMenu = document.getElementById("StartMenu");
-let RoundMenu = document.getElementById("game");
-let ModesMenu = document.getElementById("ModesMenu");
-let ModesButton = document.getElementById("ModesButton");
-let ExitButton = document.getElementById("Exit");
-
-function showModes() {
-  StartMenu.style.display = "none";
-  RoundMenu.style.display = "none";
-  ModesMenu.style.display = "grid";
-}
-
-function showStartMenu() {
-  StartMenu.style.display = "flex";
-  RoundMenu.style.display = "none";
-  ModesMenu.style.display = "none";
-}
-
-ExitButton.addEventListener("click", showStartMenu);
-ModesButton.addEventListener("click", showModes);
-
-function hideMenu() {
-  StartMenu.style.display = "none";
-  RoundMenu.style.display = "grid";
-  ModesMenu.style.display = "none";
-}
-
+// Start everything
 function startup() {
-  RoundMenu.style.display = "none";
-  ModesMenu.style.display = "none";
+  gameMenu.style.display = "none";
 
-  // 1. Set the CSS variables on the :root (documentElement)
   document.documentElement.style.setProperty("--rows", TOTAL_ROWS);
   document.documentElement.style.setProperty("--cols", TOTAL_COLS);
 
-  // Gets game container
-  const game = document.getElementById("game");
-
-  // Draws board
-  drawGrid(game);
-
-  // Starts keyboard input
+  drawGrid();
   registerKeyboardEvents();
 }
 
-let StartButton = document.getElementById("Start-Round");
-StartButton.addEventListener("click", hideMenu);
-
-// Starts game
+startButton.addEventListener("click", startGame);
 startup();

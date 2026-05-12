@@ -6130,7 +6130,7 @@ export const fourLetterDictionary = [
   "year",
   "your",
   "zero",
-  "zone"
+  "zone",
 ];
 
 export const threeLetterDictionary = [
@@ -6425,7 +6425,7 @@ export const threeLetterDictionary = [
   "yes",
   "you",
   "zip",
-  "zoo"
+  "zoo",
 ];
 
 export const twoLetterDictionary = [
@@ -6522,5 +6522,5 @@ export const twoLetterDictionary = [
   "ya",
   "ye",
   "yo",
-  "za"
+  "za",
 ];
