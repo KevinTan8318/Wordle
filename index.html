@@ -17,7 +17,9 @@
       </div>
 
       <div class="menu-section">
-        <button class="menu-button rose-button" type="button">Modes</button>
+        <button id="ModesButton" class="menu-button rose-button" type="button">
+          Modes
+        </button>
 
         <button
           id="Start-Round"
@@ -32,5 +34,33 @@
     <div id="game">
       <div class="grid"></div>
     </div>
+
+    <div id="modes">
+      <div class="inner" id="TopDiv">
+        <h2>Modes Menu</h2>
+        <button id="ExitBtn" class="ExitButton">X</button>
+      </div>
+      <div class="inner">
+        <h2>Total Rows</h2>
+        <p>choose how many guesses you get (1-10)</p>
+        <input id="totalRowsLabel" type="number" />
+        <button id="totalRowsButton">Save</button>
+      </div>
+
+      <div class="inner">
+        <h2>Word Length</h2>
+        <p>Choose how long you want the words to be from 2-5</p>
+        <input id="totalLengthLabel" type="number" />
+        <button id="totalLengthButton">Save</button>
+      </div>
+
+      <div class="inner">
+        <h2>Rapid Fire</h2>
+        <p>See how far of a win streak you can reach</p>
+        <button id="rapidFireButton">Start</button>
+      </div>
+    </div>
+
+    <h1 id="Streak"></h1>
   </body>
 </html>
