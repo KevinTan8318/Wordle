@@ -267,10 +267,7 @@ function createKeyboard() {
 
 function startGame() {
   // show the main menu
-
-  startMenu.classList.add("TweenUI-Out");
-
-  // startMenu.style.display = "none";
+  startMenu.style.display = "none";
   gameMenu.style.display = "grid";
 }
 
