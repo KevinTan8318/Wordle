@@ -11,11 +11,15 @@ let isRapidFire = false;
 let currentStreak = 0;
 let dictionary = [];
 
-if (TOTAL_COLS === 2) dictionary = twoLetterDictionary;
-else if (TOTAL_COLS === 3) dictionary = threeLetterDictionary;
-else if (TOTAL_COLS === 4) dictionary = fourLetterDictionary;
-else if (TOTAL_COLS === 5) dictionary = fiveLetterDictionary;
-else console.log("No dictionary found for this word length.");
+function updateDictionary() {
+  if (TOTAL_COLS === 2) dictionary = twoLetterDictionary;
+  else if (TOTAL_COLS === 3) dictionary = threeLetterDictionary;
+  else if (TOTAL_COLS === 4) dictionary = fourLetterDictionary;
+  else if (TOTAL_COLS === 5) dictionary = fiveLetterDictionary;
+  else console.log("No dictionary found for this word length.");
+}
+
+updateDictionary();
 
 const state = {
   secret: dictionary[Math.floor(Math.random() * dictionary.length)], // Selects a random word from the dictionary
@@ -52,6 +56,11 @@ const totalLengthLabel = document.getElementById("totalLengthLabel");
 
 const rapidFireButton = document.getElementById("rapidFireButton");
 const StreakLabel = document.getElementById("Streak");
+const EndMenu = document.getElementById("EndMenuId");
+const replayButton = document.getElementById("ReplayButton");
+const mainMenuButton = document.getElementById("MainMenuButton");
+const wordLabel = document.getElementById("wordLabel");
+const statusLabel = document.getElementById("StatusLabel");
 
 function drawGrid() {
   board.innerHTML = ""; // clear anything thats already there
@@ -163,7 +172,11 @@ function revealWord(guess) {
   }
   setTimeout(() => {
     if (isWinner) {
-      console.log("Congratulations!");
+      if (isRapidFire == false) {
+        EndMenu.style.display = "block";
+        statusLabel.textContent = "You have won";
+        wordLabel.textContent = "Word: " + state.secret;
+      }
 
       if (isRapidFire) {
         currentStreak++;
@@ -171,7 +184,9 @@ function revealWord(guess) {
         setTimeout(resetGameRound, 1500);
       }
     } else if (isGameOver) {
-      console.log(`Better luck next time! The word was ${state.secret}.`);
+      EndMenu.style.display = "block";
+      statusLabel.textContent = "You have lost..";
+      wordLabel.textContent = "Word: " + state.secret;
 
       if (isRapidFire) {
         alert(`Game Over! Final Streak: ${currentStreak}`);
@@ -183,57 +198,93 @@ function revealWord(guess) {
   }, 3 * animationDuration);
 }
 
-function registerKeyboardEvents() {
-  document.body.onkeydown = (input) => {
-    if (state.roundOver) return;
+function inputChecker(key) {
+  if (state.roundOver) return;
+  if (state.currentRow >= TOTAL_ROWS) return;
 
-    const key = input.key; // get which key they pressed
+  if (key === "Enter") {
+    if (state.currentCol === TOTAL_COLS) {
+      const word = getCurrentWord();
 
-    if (state.currentRow >= TOTAL_ROWS) return; // ends if the row is full
-
-    if (key === "Enter") {
-      if (state.currentCol === TOTAL_COLS) {
-        // if the row is full
-        const word = getCurrentWord(); // get the word
-
-        if (isWordValid(word)) {
-          // check if the word is in the dictionary
-          revealWord(word); // show what they got right and wrong
-          state.currentRow++;
-          state.currentCol = 0;
-        } else {
-          console.log("Not a valid word."); // they didnt input a word thats included in the dictionary
-        }
+      if (isWordValid(word)) {
+        revealWord(word);
+        state.currentRow++;
+        state.currentCol = 0;
+      } else {
+        console.log("Not a valid word.");
       }
     }
+  }
 
-    if (key === "Backspace") {
-      removeLetter();
-    }
+  if (key === "Backspace" || key === "Remove") {
+    removeLetter();
+  }
 
-    if (isLetter(key)) {
-      addLetter(key.toLowerCase());
-    }
+  if (isLetter(key)) {
+    addLetter(key.toLowerCase());
+  }
 
-    updateGrid();
+  updateGrid();
+}
+
+function registerKeyboardEvents() {
+  document.body.onkeydown = (input) => {
+    inputChecker(input.key);
   };
+}
+
+function UpdateKeys(KeyName) {
+  inputChecker(KeyName);
+}
+
+function createKeyboard() {
+  const keyboardInput = [
+    ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+    ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+    ["Enter", "Z", "X", "C", "V", "B", "N", "M", "Remove"],
+  ];
+
+  const Row1 = document.getElementById("Row1");
+  const Row2 = document.getElementById("Row2");
+  const Row3 = document.getElementById("Row3");
+
+  function createKeys(keyRow, Container) {
+    for (let i = 0; i < keyRow.length; i++) {
+      let newButton = document.createElement("button");
+      newButton.textContent = keyRow[i];
+      newButton.className = "KeyboardButton";
+      newButton.onclick = function () {
+        UpdateKeys(newButton.textContent);
+      };
+      Container.appendChild(newButton);
+    }
+  }
+
+  createKeys(keyboardInput[0], Row3);
+  createKeys(keyboardInput[1], Row2);
+  createKeys(keyboardInput[2], Row1);
 }
 
 function startGame() {
   // show the main menu
-  startMenu.style.display = "none";
+
+  startMenu.classList.add("TweenUI-Out");
+
+  // startMenu.style.display = "none";
   gameMenu.style.display = "grid";
 }
 
 function startup() {
   gameMenu.style.display = "none"; // hide everything and start the game
   modesMenu.style.display = "none";
+  EndMenu.style.display = "none";
 
   document.documentElement.style.setProperty("--rows", TOTAL_ROWS); // upd the css to the total rows
   document.documentElement.style.setProperty("--cols", TOTAL_COLS); // upd the css to the total columns
 
   drawGrid();
   registerKeyboardEvents();
+  createKeyboard();
 }
 
 function showModesMenu() {
@@ -291,11 +342,7 @@ function updateWordLength() {
   totalLengthLabel.value = wordLength;
   TOTAL_COLS = wordLength;
 
-  if (TOTAL_COLS === 2) dictionary = twoLetterDictionary;
-  else if (TOTAL_COLS === 3) dictionary = threeLetterDictionary;
-  else if (TOTAL_COLS === 4) dictionary = fourLetterDictionary;
-  else if (TOTAL_COLS === 5) dictionary = fiveLetterDictionary;
-
+  updateDictionary();
   resetGameRound();
 }
 
@@ -308,11 +355,27 @@ function startRapidFire() {
   startGame();
 }
 
+function replay() {
+  EndMenu.style.display = "none";
+
+  state.roundOver = false;
+
+  updateDictionary();
+  resetGameRound();
+}
+
+function mainMenu() {
+  replay();
+  hideModesMenu();
+}
+
 startButton.addEventListener("click", startGame);
 modesButton.addEventListener("click", showModesMenu);
 exitButton.addEventListener("click", hideModesMenu);
 totalRowsButton.addEventListener("click", updateRows);
 totalLengthButton.addEventListener("click", updateWordLength);
 rapidFireButton.addEventListener("click", startRapidFire);
+replayButton.addEventListener("click", replay);
+mainMenuButton.addEventListener("click", mainMenu);
 
 startup();

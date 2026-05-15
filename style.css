@@ -21,6 +21,7 @@ img {
   place-items: center;
   width: 100%;
   height: 600px;
+  position: absolute;
 }
 
 .grid {
@@ -207,4 +208,49 @@ button:active {
 
 .ExitButton:hover {
   background-color: #d84840;
+}
+
+.streakClass {
+  color: white;
+  text-align: center;
+}
+
+.EndMenu {
+  display: block;
+  background-color: rgb(246, 247, 235);
+  padding: 20px 30px;
+  border-radius: 6%;
+  text-align: center;
+  position: absolute;
+}
+
+.keyboardDiv {
+  text-align: center;
+}
+
+.row1,
+.row2,
+.row3 {
+  text-align: center;
+  padding: 5px;
+}
+
+.KeyboardButton {
+  height: 55px;
+  margin: 3px;
+  font-size: 15px;
+  background-color: #5f5f60;
+}
+
+.TweenUI-In {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.TweenUI-Out {
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
 }
