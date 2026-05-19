@@ -2,10 +2,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wordy</title>
+    <title>Wordy - NOT a wordle clone</title>
 
+    <link rel="icon" href="Images/icon.png" />
     <link rel="stylesheet" href="style.css" />
     <script type="module" src="index.js" defer></script>
+    <script type="module" src="sounds.js" defer></script>
   </head>
 
   <body>
@@ -67,7 +69,7 @@
 
       <div class="inner">
         <h2>Word Length</h2>
-        <p>Choose how long you want the words to be from 2-5</p>
+        <p>Choose how long you want the words to be from 2-10</p>
         <input id="totalLengthLabel" type="number" />
         <button id="totalLengthButton">Save</button>
       </div>
@@ -77,6 +79,12 @@
         <p>See how far of a win streak you can reach</p>
         <button id="rapidFireButton">Start</button>
       </div>
+
+      <!-- <div class="inner">
+        <h2>Time Rush</h2>
+        <p>You have a total of 60 seconds to guess the word</p>
+        <button id="TimeRushButton">Start</button>
+      </div> -->
     </div>
   </body>
 </html>

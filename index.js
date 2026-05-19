@@ -3,6 +3,11 @@ import {
   threeLetterDictionary,
   fourLetterDictionary,
   fiveLetterDictionary,
+  sixLetterDictionary,
+  sevenLetterDictionary,
+  eightLetterDictionary,
+  nineLetterDictionary,
+  tenLetterDictionary,
 } from "./dictionary.js";
 
 let TOTAL_ROWS = 6;
@@ -16,6 +21,11 @@ function updateDictionary() {
   else if (TOTAL_COLS === 3) dictionary = threeLetterDictionary;
   else if (TOTAL_COLS === 4) dictionary = fourLetterDictionary;
   else if (TOTAL_COLS === 5) dictionary = fiveLetterDictionary;
+  else if (TOTAL_COLS === 6) dictionary = sixLetterDictionary;
+  else if (TOTAL_COLS === 7) dictionary = sevenLetterDictionary;
+  else if (TOTAL_COLS === 8) dictionary = eightLetterDictionary;
+  else if (TOTAL_COLS === 9) dictionary = nineLetterDictionary;
+  else if (TOTAL_COLS === 10) dictionary = tenLetterDictionary;
   else console.log("No dictionary found for this word length.");
 }
 
@@ -267,6 +277,7 @@ function createKeyboard() {
 
 function startGame() {
   // show the main menu
+
   startMenu.style.display = "none";
   gameMenu.style.display = "grid";
 }
@@ -330,8 +341,8 @@ function updateRows() {
 function updateWordLength() {
   let wordLength = Number(totalLengthLabel.value);
 
-  if (wordLength > 5) {
-    wordLength = 5;
+  if (wordLength > 10) {
+    wordLength = 10;
   } else if (wordLength < 2) {
     wordLength = 2;
   }
